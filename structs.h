@@ -13,6 +13,8 @@ struct voiture{
 
 struct classement{
 	int start;
+	int time_start;
+	int current_time;
 	float best_S1;
 	int S1_id;
 	float best_S2;

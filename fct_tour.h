@@ -9,63 +9,48 @@ float genererTemps(int id, int tr){
 };
 
 void tour(struct voiture * v, struct classement * clas){ //la fonction attend un pointeur sur une structure voiture
-	usleep(100);
-	float t1;
-	float t2;//quand on fera plusieurs voitures en meme temps, est-ce que une voiture peut modifier le t1 pendant qu'une autre est encore sur le t2->non
-	float t3;
-	t1 = genererTemps(v->id, v->tour_fait);
-	v->tps_S1 = t1;
-	t2 = genererTemps(v->id, v->tour_fait);
-	v->tps_S2 = t2;
-	t3 = genererTemps(v->id, v->tour_fait);
-	v->tps_S3 = t3;
-	/*if(v->tps_S1 > (t1 = genererTemps(v->id, v->tour_fait))){
-		v->tps_S1 = t1;
-	}*/
+	usleep(100000);//ralenti les voitures pour pas qu'elles aille trop vite
 	
-	/*if(v->tps_S1 < clas.best_S1){
-		clas.best_S1= v->tps_S1;
-		clas.S1_id = v->id;
-	}*/
-	if(t1 < clas->best_S1){
-		clas->best_S1= t1;
+	v->tps_S1 = genererTemps(v->id, v->tour_fait);
+	v->tps_S2 = genererTemps(v->id, v->tour_fait);
+	v->tps_S3 = genererTemps(v->id, v->tour_fait);
+	
+	if(v->tps_S1 < clas->best_S1){
+		clas->best_S1= v->tps_S1;
 		clas->S1_id = v->id;
 	}
 	
-	
-	/*if(v->tps_S2 > (t2 = genererTemps(v->id, v->tour_fait))){
-		v->tps_S2 = t2;
-	}*/
-	
-	if(t2 < clas->best_S2){
-		clas->best_S2= t2;
+	if(v->tps_S2 < clas->best_S2){
+		clas->best_S2= v->tps_S2;
 		clas->S2_id = v->id;
 	}
 	
-	/*if(v->tps_S3 > (t3 = genererTemps(v->id, v->tour_fait))){
-		v->tps_S3 = t3;
-	}*/
-	
-	if(t3 < clas->best_S3){
-		clas->best_S3= t3;
+	if(v->tps_S3 < clas->best_S3){
+		clas->best_S3= v->tps_S3;
 		clas->S3_id = v->id;
 	}
 	
-	if(v->m_tour > t1+t2+t3){
-		v->m_tour = t1+t2+t3;
+	if(v->m_tour > v->tps_S1+v->tps_S2+v->tps_S3){
+		v->m_tour = v->tps_S1+v->tps_S2+v->tps_S3;
+	}
+	if(v->m_tour < clas->best_total){
+		clas->best_total = v->m_tour;
+		clas->total_id = v->id;
 	}
 	
 	
-	printf("n°%i: %.3f/",v->id,t1);
-	printf("%.3f/",t2);
-	printf("%.3f\n",t3);
+	printf("n°%i: %.3f/",v->id,v->tps_S1);
+	printf("%.3f/",v->tps_S2);
+	printf("%.3f\n",v->tps_S3);
 	v->tour_fait += 1;
-	v->dern_tour = t1+t2+t3;
-	v->total += t1+t2+t3;
+	v->dern_tour = v->tps_S2+v->tps_S1+v->tps_S3;
+	v->total += v->tps_S1+v->tps_S2+v->tps_S3;
 };
 
-void tourne(struct voiture * v, int d){ //peut-etre pas nécessaire
-	while(v->total < d){
-		//tour(v);
+void tourne(struct voiture * v, int d,struct classement * clas){ //peut-etre pas nécessaire
+	while(clas->current_time<=d){
+		clas->current_time=time(NULL)-clas->time_start; //obtien le temps en secondes depuis début du tour
+		tour(v, clas);
+		
 	}
 };
