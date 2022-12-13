@@ -1,9 +1,9 @@
 
 int fctsort(const void* t1, const void* t2){
-	const struct voiture * a = t1; 
-	const struct voiture * b = t2;
+	const struct voiture * v1 = t1; 
+	const struct voiture * v2 = t2;
 	int r = 0;
-	if (a->m_tour-b->m_tour < 0){
+	if (v1->m_tour-v2->m_tour < 0){
 		r = -1;
 	}
 	else{
