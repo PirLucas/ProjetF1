@@ -7,7 +7,8 @@ struct voiture{
 	float m_tour;
 	int tour_fait;
 	float total;
-	char* etat; //0-6=en course, 7-8 = P, 9=Out
+	int etat;
+	//char etat[10]; //0-6=en course, 7-8 = P, 9=Out
 	int position;//abandonné pour le moment
 };
 

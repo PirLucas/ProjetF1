@@ -8,17 +8,17 @@ float genererTemps(int id, int tr){
 	return f;
 };
 
-char* genererEtat(struct voiture * v){//est-ce que c'est une modification des data qui demandera de reattacher? !! attacher dans chanque fils
+int genererEtat(struct voiture * v){//est-ce que c'est une modification des data qui demandera de reattacher? !! attacher dans chanque fils
 	int r =(((int) (genererTemps(v->id, v->tour_fait)*1000))%100);
-	char* etat;
+	int etat;
 	if (r <= 90){
-		etat = "en course";
+		etat = 0;
 	}
 	else if ((r>90) && (r<99)){
-		etat = "P";//tout les X? au moins un pendandt la course du dimanche, le plus rapide possible!!25sec
+		etat = 1;//tout les X? au moins un pendandt la course du dimanche, le plus rapide possible!!25sec
 	}
 	else if (r == 99){
-		etat = "OUT";
+		etat = 2;
 	}
 	return etat;
 }
@@ -45,13 +45,13 @@ void tour(struct voiture * v, struct classement * clas){ //la fonction attend un
 		clas->best_S3= v->tps_S3;
 		clas->S3_id = v->id;
 	}
-	if ((v->etat = genererEtat(v)) == "OUT"){
+	if ((v->etat = genererEtat(v)) == 2){
 		return;
 	}
-	else if (v->etat == "P"){
+	else if (v->etat == 1){
 		usleep(100000);
 		v->tps_S3 += 25;
-		v->etat = "en course";
+		v->etat = 0;
 	}
 	
 	if(v->m_tour > v->tps_S1+v->tps_S2+v->tps_S3){
@@ -74,7 +74,7 @@ void tour(struct voiture * v, struct classement * clas){ //la fonction attend un
 void tourne(struct voiture * v, int d,struct classement * clas){ //peut-etre pas nécessaire
 	while(clas->current_time<=d){
 		clas->current_time=time(NULL)-clas->time_start; //obtien le temps en secondes depuis début du tour
-		if (v->etat == "OUT"){return;};
+		if (v->etat == 2){return;};
 		tour(v, clas);
 		
 	}
