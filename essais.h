@@ -3,14 +3,7 @@
 //->des que un total dépasse le temps max -> on stoppe
 //nop, on utilise du temps réel
 
-void tourne(struct voiture * v, int nbr, int d){ //peut-etre pas nécessaire
-	float temps = 0;
-	while (temps < d){
-		for (int i = 0; i < nbr; i++){
-			tour(v[i]);
-			if (v[i].total > temps){
-				temps = v[i].total;
-			}
-		}
-	}
-};
+void essais(struct voiture * v, int d,struct classement * clas){
+
+	tourne(&shCoureurs[i], duree, clas);
+}

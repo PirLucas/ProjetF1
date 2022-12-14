@@ -22,8 +22,9 @@ float diff(struct voiture v1, struct voiture v2){
 }
 
 
-struct voiture * tri(struct voiture * v,int taille, int n){
-	struct voiture * copiedV = v;
+struct voiture * tri(struct voiture * copiedV, struct voiture * v,int taille, int n){
+	memcpy(copiedV, v, taille*n);
+	//copiedV = v;
 	qsort(copiedV, n, taille, fctsort);
 	for (int i = 0; i < n; i++){
 		copiedV[i].position = i+1;

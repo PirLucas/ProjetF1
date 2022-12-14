@@ -8,6 +8,21 @@ float genererTemps(int id, int tr){
 	return f;
 };
 
+char* genererEtat(struct voiture * v){//est-ce que c'est une modification des data qui demandera de reattacher? !! attacher dans chanque fils
+	int r =(((int) (genererTemps(v->id, v->tour_fait)*1000))%100);
+	char* etat;
+	if (r <= 90){
+		etat = "en course";
+	}
+	else if ((r>90) && (r<99)){
+		etat = "P";//tout les X? au moins un pendandt la course du dimanche, le plus rapide possible!!25sec
+	}
+	else if (r == 99){
+		etat = "OUT";
+	}
+	return etat;
+}
+
 void tour(struct voiture * v, struct classement * clas){ //la fonction attend un pointeur sur une structure voiture
 	usleep(100000);//ralenti les voitures pour pas qu'elles aille trop vite
 	
@@ -19,6 +34,7 @@ void tour(struct voiture * v, struct classement * clas){ //la fonction attend un
 		clas->best_S1= v->tps_S1;
 		clas->S1_id = v->id;
 	}
+
 	
 	if(v->tps_S2 < clas->best_S2){
 		clas->best_S2= v->tps_S2;
@@ -29,6 +45,14 @@ void tour(struct voiture * v, struct classement * clas){ //la fonction attend un
 		clas->best_S3= v->tps_S3;
 		clas->S3_id = v->id;
 	}
+	if ((v->etat = genererEtat(v)) == "OUT"){
+		return;
+	}
+	else if (v->etat == "P"){
+		usleep(100000);
+		v->tps_S3 += 25;
+		v->etat = "en course";
+	}
 	
 	if(v->m_tour > v->tps_S1+v->tps_S2+v->tps_S3){
 		v->m_tour = v->tps_S1+v->tps_S2+v->tps_S3;
@@ -37,11 +61,11 @@ void tour(struct voiture * v, struct classement * clas){ //la fonction attend un
 		clas->best_total = v->m_tour;
 		clas->total_id = v->id;
 	}
+	//v->etat = genererEtat(v);
 	
-	
-	printf("n°%i: %.3f/",v->id,v->tps_S1);
-	printf("%.3f/",v->tps_S2);
-	printf("%.3f\n",v->tps_S3);
+	//printf("n°%i: %.3f/",v->id,v->tps_S1);
+	//printf("%.3f/",v->tps_S2);
+	//printf("%.3f\n",v->tps_S3);
 	v->tour_fait += 1;
 	v->dern_tour = v->tps_S2+v->tps_S1+v->tps_S3;
 	v->total += v->tps_S1+v->tps_S2+v->tps_S3;
@@ -50,6 +74,7 @@ void tour(struct voiture * v, struct classement * clas){ //la fonction attend un
 void tourne(struct voiture * v, int d,struct classement * clas){ //peut-etre pas nécessaire
 	while(clas->current_time<=d){
 		clas->current_time=time(NULL)-clas->time_start; //obtien le temps en secondes depuis début du tour
+		if (v->etat == "OUT"){return;};
 		tour(v, clas);
 		
 	}
