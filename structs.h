@@ -25,6 +25,10 @@ struct classement{
 	int S3_id;
 	float best_total;
 	int total_id;
+	int compteur;
+	int flag;
 };
+
+
 
 

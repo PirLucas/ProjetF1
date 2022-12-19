@@ -1,5 +1,5 @@
-void affichageTxt(struct voiture * v,int nbr,struct classement * clas){
-	FILE* f = fopen("rapport.txt", "w");  // open the file for writing
+void affichageTxt(struct voiture * v,int nbr,struct classement * clas, char* rapport){
+	FILE* f = fopen(rapport, "w");  // open the file for writing
 	if (f != NULL)                       // check for success
 	{
 	    
@@ -41,7 +41,7 @@ int creeVoitures(struct voiture * v, struct classement * clas, char * rapport){
    	
 	
 	
-	if ((fd = open("rapport.txt", O_RDONLY)) == -1){ //ouvre et vérifie l'ouverture du fichier
+	if ((fd = open(rapport, O_RDONLY)) == -1){ //ouvre et vérifie l'ouverture du fichier
      		printf("erreur open");
       		exit(-2);
    	}
